@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: node:18
+        command: ["sh", "-c"]
+        args:
+          - |
+            npm install express mongodb &&
+            cat <<EOF > app.js
+            const express = require('express');
+            const app = express();
+            app.get('/', (req,res) => res.send('Backend API is working'));
+            app.listen(3000, () => console.log('API running'));
+            EOF
+            node app.js
+        ports:
+        - containerPort: 3000
